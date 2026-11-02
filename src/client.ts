@@ -49,6 +49,16 @@ export class DiscordClient {
         continue;
       }
 
+      // Search answers 202 with no results while Discord indexes the guild.
+      if (res.status === 202) {
+        const data = (await res.json().catch(() => ({}))) as {
+          retry_after?: number;
+        };
+        throw new DiscordAPIError(202, {
+          message: `Discord is still indexing this server for search. Retry in ${Math.ceil(data.retry_after ?? 5)} seconds.`,
+        });
+      }
+
       if (!res.ok) {
         const error = (await res.json().catch(() => ({}))) as Record<
           string,
