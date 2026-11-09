@@ -201,8 +201,9 @@ export function formatDMList(channels: Channel[]): string {
 
   const lines = channels.map((ch, i) => {
     if (ch.type === ChannelType.GroupDM) {
-      const names = ch.recipients?.map(displayName).join(", ") ?? "Group DM";
-      return `${i + 1}. Group: ${names} (ID: ${ch.id})`;
+      const label =
+        ch.name || ch.recipients?.map(displayName).join(", ") || "Group DM";
+      return `${i + 1}. Group: ${label} (ID: ${ch.id})`;
     }
     const recipient = ch.recipients?.[0];
     const name = recipient ? displayName(recipient) : "Unknown User";
