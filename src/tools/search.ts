@@ -31,7 +31,7 @@ export function registerSearchTools(
 ): void {
   server.tool(
     "discord_search",
-    "Search messages in a Discord server. The most powerful tool — find specific conversations, messages from particular users, or content matching keywords. Supports combining multiple filters. Results are ordered by relevance.",
+    "Search messages in a Discord server. The most powerful tool — find specific conversations, messages from particular users, or content matching keywords. Supports combining multiple filters. Results are newest first unless `sort` says otherwise.",
     {
       guild_id: z
         .string()
@@ -75,8 +75,12 @@ export function registerSearchTools(
         .max(25)
         .optional()
         .describe("Number of results (1-25, default 25)."),
+      sort: z
+        .enum(["newest", "oldest", "relevance"])
+        .optional()
+        .describe("Result order (default newest)."),
     },
-    async ({ guild_id, content, author, channel_id, has, before, after, limit }) => {
+    async ({ guild_id, content, author, channel_id, has, before, after, limit, sort }) => {
       const id = resolveGuildId(guild_id);
       if (typeof id !== "string") return id;
 
@@ -112,6 +116,8 @@ export function registerSearchTools(
           has,
           min_id: minId,
           max_id: maxId,
+          sort_by: sort === "relevance" ? "relevance" : "timestamp",
+          sort_order: sort === "oldest" ? "asc" : "desc",
         });
 
         const maxResults = limit ?? 25;

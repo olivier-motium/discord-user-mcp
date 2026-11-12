@@ -174,6 +174,8 @@ export class DiscordClient {
     if (query.min_id) params.set("min_id", query.min_id);
     if (query.max_id) params.set("max_id", query.max_id);
     if (query.offset !== undefined) params.set("offset", String(query.offset));
+    if (query.sort_by) params.set("sort_by", query.sort_by);
+    if (query.sort_order) params.set("sort_order", query.sort_order);
     return this.request(
       "GET",
       `/guilds/${guildId}/messages/search?${params.toString()}`,
