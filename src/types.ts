@@ -141,4 +141,6 @@ export interface SearchQuery {
   min_id?: string;
   max_id?: string;
   offset?: number;
+  sort_by?: "timestamp" | "relevance";
+  sort_order?: "asc" | "desc";
 }
